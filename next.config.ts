@@ -4,8 +4,9 @@ export default {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'cdn.shopify.com',
-        pathname: '/s/files/**'
+        hostname: 'drive.longern.com'
+        // hostname: 'cdn.shopify.com',
+        // pathname: '/s/files/**'
       }
     ]
   }

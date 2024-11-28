@@ -28,7 +28,9 @@ export const getRawProductData = async (): Promise<IGoogleDBSchemaProduct[]> => 
  * 
  * @param data - The raw data from the Google Sheets.
  */
-export function reshapeProductData(data: IGoogleDBSchemaProduct[]): Product[] {
+export function reshapeProductData(data?: IGoogleDBSchemaProduct[]): Product[] {
+    if (!data) return [];
+    console.log(data)
     const productNames = new Set<string>()
     data.forEach(product => {
         productNames.add(product.Name)
