@@ -1,4 +1,4 @@
-export type { Product, ProductVariant, Image, Menu } from 'lib/shopify/types'
+export type { Image, Menu, Page, Product, ProductVariant, SEO } from 'lib/shopify/types';
 
 
 export interface IGoogleDBSchemaProduct {
@@ -16,4 +16,21 @@ export interface IGoogleDBSchemaProduct {
 export interface IGoogleDBSchemaCollection{
     Handle:string;
     Products:string;
+}
+
+export interface IGoogleDBSchemaPage{
+    ID: string;
+    Title: string;
+    Handle: string;
+    Body: string;
+    BodySummary: string;
+    SeoTitle: string;
+    SeoDescription: string;
+    CreatedAt?: string;
+    UpdatedAt?: string;
+}
+
+export interface IGoogleRecommendSchemaPage{
+    Handle: string;
+    Products: string;
 }

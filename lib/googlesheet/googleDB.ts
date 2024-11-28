@@ -1,5 +1,5 @@
 import PublicGoogleSheetsParser from 'public-google-sheets-parser'
-import { Product, IGoogleDBSchemaProduct, IGoogleDBSchemaCollection } from './types'
+import { IGoogleDBSchemaCollection, IGoogleDBSchemaPage, IGoogleDBSchemaProduct, IGoogleRecommendSchemaPage, Page, Product } from './types'
 const spreadsheetId = process.env.GOOGLE_SHEET_ID
 const updateTime = new Map<string, number>()
 
@@ -165,9 +165,13 @@ export function reshapeProductData(data?: IGoogleDBSchemaProduct[]): Product[] {
 }
 
 
-export const getRawCollectionData = async (): Promise<IGoogleDBSchemaCollection[]> => {
-    const sheetName = 'Collection';
 
+/**
+ * Generic function to get data from a sheet.
+ * @param sheetName The name of the sheet to get the data from.
+ * @returns The data from the sheet.
+ */
+async function getGenericData<T>(sheetName: string): Promise<T[]> {
     const parser: PublicGoogleSheetsParser = new PublicGoogleSheetsParser(spreadsheetId!, {
         sheetName
     })
@@ -179,6 +183,34 @@ export const getRawCollectionData = async (): Promise<IGoogleDBSchemaCollection[
         updateTime.set(sheetName, now)
     }   
     
-    return cache.get(sheetName) as IGoogleDBSchemaCollection[]
+    return cache.get(sheetName) as T[]
 }
 
+export const getRawCollectionData = async (): Promise<IGoogleDBSchemaCollection[]> => {
+    return getGenericData('Collection')
+}
+
+export const getRawPageData = async (): Promise<IGoogleDBSchemaPage[]> => {
+    return getGenericData('Page')
+}
+
+export function reshapePageData(data: IGoogleDBSchemaPage): Page {
+    return {
+        id: String(data.ID),
+        title: data.Title,
+        handle: data.Handle,
+        body: data.Body,
+        bodySummary: data.BodySummary,
+        seo: {
+            title: data['SeoTitle'],
+            description: data['SeoDescription']
+        },
+        createdAt: data.CreatedAt||'',
+        updatedAt: data.UpdatedAt||''
+    }
+}
+
+
+export const getRawRecommendData = async (): Promise<IGoogleRecommendSchemaPage[]> => {
+    return getGenericData<IGoogleRecommendSchemaPage>('Recommend')
+}

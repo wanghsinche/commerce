@@ -1,5 +1,5 @@
-import { getRawCollectionData, getRawProductData, reshapeProductData } from "./googleDB";
-import { Menu, Product } from "./types";
+import { getRawCollectionData, getRawPageData, getRawProductData, getRawRecommendData, reshapePageData, reshapeProductData } from "./googleDB";
+import { Menu, Page, Product } from "./types";
 
 
 /**
@@ -42,7 +42,6 @@ export async function getCollectionProducts({
     const products = await getProducts()
     const collectionsData = await getRawCollectionData()
     const target = collectionsData.find((item) => item.Handle === collection)
-    console.log('target', target)
     const pickedID = target?.Products.split(',').map((item) => item.trim())
     if (!pickedID?.length) {
         return []
@@ -76,4 +75,32 @@ export async function getMenu(handle: string): Promise<Menu[]> {
     ]
 
     return mockMenu
+}
+
+export async function getPage(handle: string): Promise<Page> {
+    console.log('ok-----------')
+
+    const rawPages = await getRawPageData()
+    const target = rawPages.find((item) => item.Handle === handle)    
+    console.log('ok-----------', target)
+    if (!target) {
+        console.error(`Page with handle ${handle} not found`, rawPages)
+        throw new Error(`Page with handle ${handle} not found`)
+    }
+
+    return reshapePageData(target)
+}
+  
+
+export async function getProductRecommendations(product: string): Promise<Product[]> {
+    const recommends = await getRawRecommendData()
+    const target = recommends.find((item) => item.Handle === product)
+
+    if (!target) {
+        return []
+    }
+    const productIds = target.Products.split(',').map((item) => item.trim())
+
+    const products = await getProducts()
+    return products.filter((product) => productIds.includes(product.id))
 }
