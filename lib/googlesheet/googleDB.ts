@@ -1,5 +1,6 @@
 import PublicGoogleSheetsParser from 'public-google-sheets-parser'
-import { IGoogleDBSchemaCollection, IGoogleDBSchemaPage, IGoogleDBSchemaProduct, IGoogleRecommendSchemaPage, Page, Product } from './types'
+import { IGoogleDBSchemaCollection, IGoogleDBSchemaPage, IGoogleDBSchemaProduct, IGoogleRecommendSchemaPage, Page, Product, ProductOption } from './types'
+import { uniqBy } from 'lodash-es'
 const spreadsheetId = process.env.GOOGLE_SHEET_ID
 const updateTime = new Map<string, number>()
 
@@ -7,10 +8,22 @@ const cache = new Map<string, unknown>()
 
 const ttl = 1000 * 60 * 5 // 5 minutes
 
-export const getRawProductData = async (): Promise<IGoogleDBSchemaProduct[]> => {
-    const sheetName = 'Products';
+function getSizeOption(products: IGoogleDBSchemaProduct[]): ProductOption  {
+    return {
+        id: 'Size',
+        name: 'Size',
+        values: Array.from(new Set(products.map(p=>p.Size)).values())
+    }
+}
+
+/**
+ * Generic function to get data from a sheet.
+ * @param sheetName The name of the sheet to get the data from.
+ * @returns The data from the sheet.
+ */
+async function getGenericData<T>(sheetName: string): Promise<T[]> {
     const parser: PublicGoogleSheetsParser = new PublicGoogleSheetsParser(spreadsheetId!, {
-        sheetName,
+        sheetName
     })
 
     const now = Date.now()
@@ -20,7 +33,10 @@ export const getRawProductData = async (): Promise<IGoogleDBSchemaProduct[]> => 
         updateTime.set(sheetName, now)
     }   
     
-    return cache.get(sheetName) as IGoogleDBSchemaProduct[]
+    return cache.get(sheetName) as T[]
+}
+export const getRawProductData = async (): Promise<IGoogleDBSchemaProduct[]> => {
+    return getGenericData<IGoogleDBSchemaProduct>('Products')
 }
 
 /**
@@ -50,6 +66,13 @@ export function reshapeProductData(data?: IGoogleDBSchemaProduct[]): Product[] {
             return Math.min(min, product.Price)
             }, Infinity)
         
+        const images = uniqBy(filteredData.map(product => ({
+            url: product.ImageURL,
+            altText: product.Name,
+            width: 800,
+            height: 600
+        })), (image) => image.url)
+
         const product: Product = {
             /**
              * The ID of the product.
@@ -78,7 +101,7 @@ export function reshapeProductData(data?: IGoogleDBSchemaProduct[]): Product[] {
             /**
              * The options of the product.
              */
-            options: [],
+            options: [getSizeOption(filteredData)],
             /**
              * The price range of the product.
              */
@@ -125,18 +148,13 @@ export function reshapeProductData(data?: IGoogleDBSchemaProduct[]): Product[] {
             /**
              * The images of the product.
              */
-            images: filteredData.map(product => ({
-                url: product.ImageURL,
-                altText: product.Name,
-                width: 800,
-                height: 600
-            })),
+            images,
             /**
              * The variants of the product.
              */
             variants: filteredData.map(product => {
                 return {
-                    name: product.Size,
+                    name: product.Name,
                     price: {
                         amount: String(product.Price),
                         currencyCode: 'SGD',
@@ -166,25 +184,7 @@ export function reshapeProductData(data?: IGoogleDBSchemaProduct[]): Product[] {
 
 
 
-/**
- * Generic function to get data from a sheet.
- * @param sheetName The name of the sheet to get the data from.
- * @returns The data from the sheet.
- */
-async function getGenericData<T>(sheetName: string): Promise<T[]> {
-    const parser: PublicGoogleSheetsParser = new PublicGoogleSheetsParser(spreadsheetId!, {
-        sheetName
-    })
 
-    const now = Date.now()
-    if (now - (updateTime.get(sheetName)||0) > ttl) {
-        const res = await parser.parse()
-        cache.set(sheetName, res)
-        updateTime.set(sheetName, now)
-    }   
-    
-    return cache.get(sheetName) as T[]
-}
 
 export const getRawCollectionData = async (): Promise<IGoogleDBSchemaCollection[]> => {
     return getGenericData('Collection')

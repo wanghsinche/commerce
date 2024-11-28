@@ -103,18 +103,18 @@ export default async function ProductPage(props: { params: Promise<{ handle: str
             </Suspense>
           </div>
         </div>
-        <RelatedProducts id={product.id} />
+        <RelatedProducts handle={product.handle} />
       </div>
       <Footer />
     </ProductProvider>
   );
 }
 
-async function RelatedProducts({ id }: { id: string }) {
-  const relatedProducts = await getProductRecommendations(id);
+async function RelatedProducts({ handle }: { handle: string }) {
+  const relatedProducts = await getProductRecommendations(handle);
 
   if (!relatedProducts.length) return null;
-
+  
   return (
     <div className="py-8">
       <h2 className="mb-4 text-2xl font-bold">Related Products</h2>

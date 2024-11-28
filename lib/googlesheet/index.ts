@@ -42,12 +42,12 @@ export async function getCollectionProducts({
     const products = await getProducts()
     const collectionsData = await getRawCollectionData()
     const target = collectionsData.find((item) => item.Handle === collection)
-    const pickedID = target?.Products.split(',').map((item) => item.trim())
-    if (!pickedID?.length) {
+    const pickedHandle = target?.Products.split(',').map((item) => item.trim())
+    if (!pickedHandle?.length) {
         return []
     }
 
-    return products.filter((product) => pickedID?.includes(product.id));
+    return products.filter((product) => pickedHandle?.includes(product.handle));
 }
 
 
@@ -78,13 +78,9 @@ export async function getMenu(handle: string): Promise<Menu[]> {
 }
 
 export async function getPage(handle: string): Promise<Page> {
-    console.log('ok-----------')
-
     const rawPages = await getRawPageData()
     const target = rawPages.find((item) => item.Handle === handle)    
-    console.log('ok-----------', target)
     if (!target) {
-        console.error(`Page with handle ${handle} not found`, rawPages)
         throw new Error(`Page with handle ${handle} not found`)
     }
 
@@ -99,8 +95,12 @@ export async function getProductRecommendations(product: string): Promise<Produc
     if (!target) {
         return []
     }
-    const productIds = target.Products.split(',').map((item) => item.trim())
+    const pickedHandle = target.Products.split(',').map((item) => item.trim())
+    if (!pickedHandle?.length) {
+        return []
+    }
 
     const products = await getProducts()
-    return products.filter((product) => productIds.includes(product.id))
+    return products.filter((product) => pickedHandle.includes(product.handle))
 }
+

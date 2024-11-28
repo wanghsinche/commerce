@@ -1,4 +1,4 @@
-import CartModal from 'components/cart/modal';
+// import CartModal from 'components/cart/modal';
 import LogoSquare from 'components/logo-square';
 import { getMenu } from 'lib/googlesheet';
 import { Menu } from 'lib/shopify/types';
@@ -53,7 +53,7 @@ export async function Navbar() {
           </Suspense>
         </div>
         <div className="flex justify-end md:w-1/3">
-          <CartModal />
+          {/* <CartModal /> */}
         </div>
       </div>
     </nav>
