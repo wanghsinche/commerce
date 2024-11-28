@@ -1,4 +1,4 @@
-import { getRawProductData, reshapeProductData } from "./googleDB";
+import { getRawCollectionData, getRawProductData, reshapeProductData } from "./googleDB";
 import { Menu, Product } from "./types";
 
 
@@ -40,7 +40,15 @@ export async function getCollectionProducts({
     sortKey?: string;
 }): Promise<Product[]> {
     const products = await getProducts()
-    return products.filter((product) => product.description.includes(collection))
+    const collectionsData = await getRawCollectionData()
+    const target = collectionsData.find((item) => item.Handle === collection)
+    console.log('target', target)
+    const pickedID = target?.Products.split(',').map((item) => item.trim())
+    if (!pickedID?.length) {
+        return []
+    }
+
+    return products.filter((product) => pickedID?.includes(product.id));
 }
 
 

@@ -1,25 +1,26 @@
 import PublicGoogleSheetsParser from 'public-google-sheets-parser'
-import { Product, IGoogleDBSchemaProduct } from './types'
+import { Product, IGoogleDBSchemaProduct, IGoogleDBSchemaCollection } from './types'
 const spreadsheetId = process.env.GOOGLE_SHEET_ID
-let parser: PublicGoogleSheetsParser
-let updateTime: number = 0
-let dataCache: IGoogleDBSchemaProduct[]
+const updateTime = new Map<string, number>()
+
+const cache = new Map<string, unknown>()
 
 const ttl = 1000 * 60 * 5 // 5 minutes
 
 export const getRawProductData = async (): Promise<IGoogleDBSchemaProduct[]> => {
-    if (!parser) {
-        parser = new PublicGoogleSheetsParser(spreadsheetId!)
-        updateTime = Date.now()
-        dataCache = await parser.parse()
-    } else {
-        const now = Date.now()
-        if (now - updateTime > ttl) {
-            dataCache = await parser.parse()
-            updateTime = now
-        }   
-    }
-    return dataCache
+    const sheetName = 'Products';
+    const parser: PublicGoogleSheetsParser = new PublicGoogleSheetsParser(spreadsheetId!, {
+        sheetName,
+    })
+
+    const now = Date.now()
+    if (now - (updateTime.get(sheetName)||0) > ttl) {
+        const res = await parser.parse()
+        cache.set(sheetName, res)
+        updateTime.set(sheetName, now)
+    }   
+    
+    return cache.get(sheetName) as IGoogleDBSchemaProduct[]
 }
 
 /**
@@ -30,7 +31,6 @@ export const getRawProductData = async (): Promise<IGoogleDBSchemaProduct[]> => 
  */
 export function reshapeProductData(data?: IGoogleDBSchemaProduct[]): Product[] {
     if (!data) return [];
-    console.log(data)
     const productNames = new Set<string>()
     data.forEach(product => {
         productNames.add(product.Name)
@@ -121,7 +121,7 @@ export function reshapeProductData(data?: IGoogleDBSchemaProduct[]): Product[] {
             /**
              * The last updated date of the product.
              */
-            updatedAt: new Date(updateTime).toDateString(),
+            updatedAt: '',
             /**
              * The images of the product.
              */
@@ -163,3 +163,22 @@ export function reshapeProductData(data?: IGoogleDBSchemaProduct[]): Product[] {
     return products
     
 }
+
+
+export const getRawCollectionData = async (): Promise<IGoogleDBSchemaCollection[]> => {
+    const sheetName = 'Collection';
+
+    const parser: PublicGoogleSheetsParser = new PublicGoogleSheetsParser(spreadsheetId!, {
+        sheetName
+    })
+
+    const now = Date.now()
+    if (now - (updateTime.get(sheetName)||0) > ttl) {
+        const res = await parser.parse()
+        cache.set(sheetName, res)
+        updateTime.set(sheetName, now)
+    }   
+    
+    return cache.get(sheetName) as IGoogleDBSchemaCollection[]
+}
+

@@ -12,3 +12,8 @@ export interface IGoogleDBSchemaProduct {
     Size: string;
     SizeImageURL: string;
 }
+
+export interface IGoogleDBSchemaCollection{
+    Handle:string;
+    Products:string;
+}
