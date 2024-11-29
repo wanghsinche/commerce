@@ -1,14 +1,54 @@
-import { getRawCollectionData, getRawPageData, getRawProductData, getRawRecommendData, reshapePageData, reshapeProductData } from "./googleDB";
-import { Menu, Page, Product } from "./types";
+import { getRawCollectionData, getRawPageData, getRawProductData, getRawRecommendData, reshapeCollectionData, reshapePageData, reshapeProductData } from "./googleDB";
+import { Collection, IGoogleDBSchemaProduct, Menu, Page, Product } from "./types";
+import { SortFilterItem } from 'lib/constants';
 
+function sortProducts(filteredData: IGoogleDBSchemaProduct[], sortKey: string, reverse?: boolean) {
+    if ((sortKey as SortFilterItem['sortKey']) === 'CREATED_AT') {
+        const res = filteredData.sort((a, b) => {
+            return Number(a.ID) > Number(b.ID) ? 1 : -1
+        })
+        return reverse ? res.reverse() : res
+    }
+
+    if ((sortKey as SortFilterItem['sortKey']) === 'PRICE') {
+        const res = filteredData.sort((a, b) => {
+            return a.Price > b.Price ? 1 : -1
+        })
+        return reverse ? res.reverse() : res
+    }
+
+    if ((sortKey as SortFilterItem['sortKey']) === 'BEST_SELLING') {
+        const res = filteredData.sort((a, b) => {
+            return a.Stock > b.Stock ? 1 : -1
+        })
+        return reverse ? res.reverse() : res
+    }
+    return filteredData
+}
 
 /**
  * Get all products in the Google sheet.
  * @returns a Promise that resolves to an array of Products.
  */
-export async function getProducts(): Promise<Product[]> {
+export async function getProducts({
+    query,
+    reverse,
+    sortKey
+  }: {
+    query?: string;
+    reverse?: boolean;
+    sortKey?: string;
+  }): Promise<Product[]> {
     const data = await getRawProductData()
-    return reshapeProductData(data)
+    let filteredData = data
+    if (query) {
+        filteredData = data.filter((item) => item.Name.toLowerCase().includes(query?.toLowerCase() || ''))
+    }
+    if (sortKey) {
+        filteredData = sortProducts(filteredData, sortKey, reverse)
+    }
+    return reshapeProductData(filteredData)
+    
 }
 
 
@@ -19,7 +59,7 @@ export async function getProducts(): Promise<Product[]> {
  *          no product matches the handle.
  */
 export async function getProduct(handle: string): Promise<Product | undefined> {
-    const products = await getProducts()
+    const products = await getProducts({})
     return products.find((product) => product.handle === handle)
 }
 
@@ -39,15 +79,18 @@ export async function getCollectionProducts({
     reverse?: boolean;
     sortKey?: string;
 }): Promise<Product[]> {
-    const products = await getProducts()
+    const data = await getRawProductData()
     const collectionsData = await getRawCollectionData()
     const target = collectionsData.find((item) => item.Handle === collection)
     const pickedHandle = target?.Products.split(',').map((item) => item.trim())
     if (!pickedHandle?.length) {
         return []
     }
-
-    return products.filter((product) => pickedHandle?.includes(product.handle));
+    let filteredData = data.filter((product) => pickedHandle?.includes(product.Name)); 
+    if (sortKey) {
+        filteredData = sortProducts(filteredData, sortKey, reverse)
+    }
+    return reshapeProductData(filteredData)
 }
 
 
@@ -65,23 +108,24 @@ export async function getMenu(handle: string): Promise<Menu[]> {
             path: '/'
         },
         {
-            title: 'About',
-            path: '/about'
+            title: 'All',
+            path: '/search'
         },
         {
-            title: 'Contact',
-            path: '/contact'
+            title: 'Carousell',
+            path: 'https://www.carousell.sg/u/ladylines/',
+            external: true
         }
     ]
 
     return mockMenu
 }
 
-export async function getPage(handle: string): Promise<Page> {
+export async function getPage(handle: string): Promise<Page|undefined> {
     const rawPages = await getRawPageData()
     const target = rawPages.find((item) => item.Handle === handle)    
     if (!target) {
-        throw new Error(`Page with handle ${handle} not found`)
+        return
     }
 
     return reshapePageData(target)
@@ -100,7 +144,22 @@ export async function getProductRecommendations(product: string): Promise<Produc
         return []
     }
 
-    const products = await getProducts()
+    const products = await getProducts({})
     return products.filter((product) => pickedHandle.includes(product.handle))
 }
 
+
+export async function getCollections(): Promise<Collection[]>{
+    const collections = await getRawCollectionData()
+    return collections.filter(i=>!i.Handle.startsWith('hidden')).map(i=>reshapeCollectionData(i))
+}
+
+export async function getCollection(handle: string): Promise<Collection | undefined> {
+    const collections = await getCollections()
+    return collections.find((collection) => collection.handle === handle)
+}
+
+export async function getPages(): Promise<Page[]>{
+    const pages = await getRawPageData()
+    return pages.map(i=>reshapePageData(i))
+}

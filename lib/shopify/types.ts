@@ -50,6 +50,7 @@ export type Image = {
 export type Menu = {
   title: string;
   path: string;
+  external?: boolean;
 };
 
 export type Money = {

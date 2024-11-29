@@ -1,5 +1,5 @@
 import PublicGoogleSheetsParser from 'public-google-sheets-parser'
-import { IGoogleDBSchemaCollection, IGoogleDBSchemaPage, IGoogleDBSchemaProduct, IGoogleRecommendSchemaPage, Page, Product, ProductOption } from './types'
+import { Collection, IGoogleDBSchemaCollection, IGoogleDBSchemaPage, IGoogleDBSchemaProduct, IGoogleRecommendSchemaPage, Page, Product, ProductOption } from './types'
 import { uniqBy } from 'lodash-es'
 const spreadsheetId = process.env.GOOGLE_SHEET_ID
 const updateTime = new Map<string, number>()
@@ -213,4 +213,19 @@ export function reshapePageData(data: IGoogleDBSchemaPage): Page {
 
 export const getRawRecommendData = async (): Promise<IGoogleRecommendSchemaPage[]> => {
     return getGenericData<IGoogleRecommendSchemaPage>('Recommend')
+}
+
+
+export function reshapeCollectionData(data: IGoogleDBSchemaCollection): Collection {
+    return {
+        path: `/search/${data.Handle}`,
+        handle: data.Handle,
+        title: data.Title,
+        seo: {
+            title: data.Title,
+            description: ''
+        },
+        description: data.Title,
+        updatedAt: ''
+    }
 }

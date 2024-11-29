@@ -36,15 +36,15 @@ export async function generateMetadata(props: {
     },
     openGraph: url
       ? {
-          images: [
-            {
-              url,
-              width,
-              height,
-              alt
-            }
-          ]
-        }
+        images: [
+          {
+            url,
+            width,
+            height,
+            alt
+          }
+        ]
+      }
       : null
   };
 }
@@ -114,7 +114,7 @@ async function RelatedProducts({ handle }: { handle: string }) {
   const relatedProducts = await getProductRecommendations(handle);
 
   if (!relatedProducts.length) return null;
-  
+
   return (
     <div className="py-8">
       <h2 className="mb-4 text-2xl font-bold">Related Products</h2>
