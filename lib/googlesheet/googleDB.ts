@@ -9,7 +9,7 @@ const updateTime = new Map<string, number>()
 
 const cache = new Map<string, unknown>()
 
-const ttl = 1000 * 60 * 5 // 5 minutes
+const ttl = 1000 * 60 * 1 // 1 minutes
 
 function getSizeOption(products: IGoogleDBSchemaProduct[]): ProductOption  {
     return {
