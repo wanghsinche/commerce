@@ -1,6 +1,9 @@
-import PublicGoogleSheetsParser from 'public-google-sheets-parser'
+import PublicGoogleSheetsParser from './google-sheet-parser.mjs'
 import { Collection, IGoogleDBSchemaCollection, IGoogleDBSchemaPage, IGoogleDBSchemaProduct, IGoogleRecommendSchemaPage, Page, Product, ProductOption } from './types'
 import { uniqBy } from 'lodash-es'
+
+export const runtime = "edge";
+
 const spreadsheetId = process.env.GOOGLE_SHEET_ID
 const updateTime = new Map<string, number>()
 

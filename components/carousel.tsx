@@ -1,6 +1,7 @@
 import { getCollectionProducts } from 'lib/googlesheet';
 import Link from 'next/link';
 import { GridTileImage } from './grid/tile';
+export const runtime = "edge";
 
 export async function Carousel() {
   // Collections that start with `hidden-*` are hidden from the search page.

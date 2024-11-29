@@ -1,6 +1,7 @@
 import { getCollections, getPages, getProducts } from 'lib/googlesheet';
 import { validateEnvironmentVariables } from 'lib/utils';
 import { MetadataRoute } from 'next';
+export const runtime = "edge";
 
 type Route = {
   url: string;

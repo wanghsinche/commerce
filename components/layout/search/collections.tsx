@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 
 import { getCollections } from 'lib/googlesheet';
 import FilterList from './filter';
+export const runtime = "edge";
 
 async function CollectionList() {
   const collections = await getCollections();

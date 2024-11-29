@@ -125,7 +125,7 @@ export async function getPage(handle: string): Promise<Page|undefined> {
     const rawPages = await getRawPageData()
     const target = rawPages.find((item) => item.Handle === handle)    
     if (!target) {
-        return
+        return 
     }
 
     return reshapePageData(target)

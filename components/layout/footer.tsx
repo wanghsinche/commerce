@@ -6,6 +6,7 @@ import { getMenu } from 'lib/googlesheet';
 import { Suspense } from 'react';
 
 const { COMPANY_NAME, SITE_NAME } = process.env;
+export const runtime = "edge";
 
 export default async function Footer() {
   const currentYear = new Date().getFullYear();

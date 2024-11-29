@@ -4,6 +4,8 @@ import Prose from 'components/prose';
 import { getPage } from 'lib/googlesheet';
 import { notFound } from 'next/navigation';
 
+export const runtime = "edge";
+
 export async function generateMetadata(props: {
   params: Promise<{ page: string }>;
 }): Promise<Metadata> {

@@ -2,6 +2,7 @@ import { GridTileImage } from 'components/grid/tile';
 import { getCollectionProducts } from 'lib/googlesheet';
 import type { Product } from 'lib/shopify/types';
 import Link from 'next/link';
+export const runtime = "edge";
 
 function ThreeItemGridItem({
   item,

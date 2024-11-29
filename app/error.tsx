@@ -1,4 +1,5 @@
 'use client';
+export const runtime = "edge";
 
 export default function Error({ reset }: { reset: () => void }) {
   return (

@@ -8,6 +8,7 @@ import MobileMenu from './mobile-menu';
 import Search, { SearchSkeleton } from './search';
 
 const { SITE_NAME } = process.env;
+export const runtime = "edge";
 
 export async function Navbar() {
   const menu = await getMenu('next-js-frontend-header-menu');
