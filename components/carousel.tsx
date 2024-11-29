@@ -17,7 +17,7 @@ export async function Carousel() {
   return (
     <div className="w-full overflow-x-auto pb-6 pt-1">
       {/* animate-carousel */}
-      <ul className="flex gap-4">
+      <ul className="flex gap-4 animate-carousel">
         {carouselProducts.map((product, i) => (
           <li
             key={`${product.handle}${i}`}

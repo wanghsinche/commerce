@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import MobileMenu from './mobile-menu';
 import Search, { SearchSkeleton } from './search';
+import { SocialMedia } from '../social-media';
 
 const { SITE_NAME } = process.env;
 export const runtime = "edge";
@@ -56,6 +57,7 @@ export async function Navbar() {
         </div>
         <div className="flex justify-end md:w-1/3">
           {/* <CartModal /> */}
+          <SocialMedia />
         </div>
       </div>
     </nav>

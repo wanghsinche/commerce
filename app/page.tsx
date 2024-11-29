@@ -1,4 +1,5 @@
 import { Carousel } from 'components/carousel';
+import { HomePicks } from 'components/grid/home-picks';
 import { ThreeItemGrid } from 'components/grid/three-items';
 import Footer from 'components/layout/footer';
 export const runtime = "edge";
@@ -14,6 +15,7 @@ export default function HomePage() {
     <>
       <ThreeItemGrid />
       <Carousel />
+      <HomePicks />
       <Footer />
     </>
   );
