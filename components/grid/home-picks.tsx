@@ -21,7 +21,7 @@ export async function HomePicks() {
                 href="/search"
                 className="text-center rounded-full bg-slate-600 p-2 text-white"
             >
-                More Products
+                View More
             </Link>
         </div>
     </div>
