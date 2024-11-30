@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { ChatBubbleBottomCenterIcon } from '@heroicons/react/24/outline';
 
 export const WhatsAppButton = ({ message = "Hello!", phoneNumber = "", disabled = false }) => {
-    const buttonClasses = "relative flex items-center justify-center px-4 py-2 rounded-lg font-medium text-white bg-green-500 hover:bg-green-600 transition-colors";
+    const buttonClasses = "relative flex items-center justify-center px-4 py-2 rounded-lg font-medium text-white bg-green-500 hover:bg-green-600 transition-colors w-full sm:w-auto";
     const disabledClasses = "opacity-50 cursor-not-allowed hover:bg-green-500";
 
     const handleClick = () => {

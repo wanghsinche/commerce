@@ -5,7 +5,7 @@ import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 
 const TelegramButton = ({ message = "Hello!", username = "", disabled = false }) => {
-  const buttonClasses = "relative flex items-center justify-center px-4 py-2 rounded-lg font-medium text-white bg-blue-500 hover:bg-blue-600 transition-colors";
+  const buttonClasses = "relative flex items-center justify-center px-4 py-2 rounded-lg font-medium text-white bg-blue-500 hover:bg-blue-600 transition-colors w-full sm:w-auto";
   const disabledClasses = "opacity-50 cursor-not-allowed hover:bg-blue-500";
 
   const handleClick = () => {

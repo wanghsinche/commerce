@@ -21,8 +21,8 @@ const useData = ({ product }: { product: Product }) => {
     const selectedOptions = selectedVariant?.selectedOptions;
 
     const message = selectedVariant && selectedOptions ?
-        `Hi, I'm interested in ${selectedVariant.title} ${selectedOptions.map((option) => option.value).join(', ')}  [${product.id}]` :
-        `Hi, I'm interested in ${product.title} [${product.id}]`;
+        `Hi, I'm interested in ${selectedVariant.title} [${selectedOptions.map((option) => option.value).join(', ')}]` :
+        `Hi, I'm interested in ${product.title}`;
 
     return {
         message, selectedVariantId
