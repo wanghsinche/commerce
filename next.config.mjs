@@ -15,13 +15,15 @@ export default {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'drive.longern.com'
-        // hostname: 'cdn.shopify.com',
-        // pathname: '/s/files/**'
-      },
+        hostname: 'r2.findata-be.uk'
+       },
+      // {
+      //   protocol: 'https',
+      //   hostname: 'oss.findata-be.uk'
+      // },
       {
         protocol: 'https',
-        hostname: 'r2.findata-be.uk'
+        hostname: 'media.karousell.com'
       }
     ]
   }

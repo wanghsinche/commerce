@@ -4,13 +4,13 @@ export type { Image, Menu, Page, Product, ProductVariant, SEO, ProductOption, Co
 export interface IGoogleDBSchemaProduct {
     ID: number;
     Name: string;
-    Description: string;
+    // Description: string;
     Price: number;
     Stock: number;
     ImageURL: string;
-    Category: string;
+    // Category: string;
     Size: string;
-    SizeImageURL: string;
+    // SizeImageURL: string;
 }
 
 export interface IGoogleDBSchemaCollection{

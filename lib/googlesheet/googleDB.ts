@@ -48,7 +48,7 @@ export const getRawProductData = async (): Promise<IGoogleDBSchemaProduct[]> => 
  * 
  * @param data - The raw data from the Google Sheets.
  */
-export function reshapeProductData(data?: IGoogleDBSchemaProduct[]): Product[] {
+export function reshapeProductData(data: IGoogleDBSchemaProduct[], pages: IGoogleDBSchemaPage[]): Product[] {
     if (!data) return [];
     const productNames = new Set<string>()
     data.forEach(product => {
@@ -60,6 +60,11 @@ export function reshapeProductData(data?: IGoogleDBSchemaProduct[]): Product[] {
     productNames.forEach(name => {
         const filteredData = data.filter(product => product.Name === name)
         if (!filteredData.length) return
+
+        const correspondingPage = pages?.find(page => page.Handle === name)
+
+        const descriptionHtml = (correspondingPage?.Body || '').replaceAll('\n', '<br>')
+
         const sample = filteredData[0] as IGoogleDBSchemaProduct
         const availableForSale = filteredData.some(product => product.Stock > 0)
         const maxVariantPrice = filteredData.reduce((max, product) => {
@@ -96,11 +101,11 @@ export function reshapeProductData(data?: IGoogleDBSchemaProduct[]): Product[] {
             /**
              * The description of the product.
              */
-            description: sample.Description,
+            description: correspondingPage?.BodySummary || '',
             /**
              * The HTML description of the product.
              */
-            descriptionHtml: sample.Description,
+            descriptionHtml: descriptionHtml,
             /**
              * The options of the product.
              */
@@ -137,8 +142,8 @@ export function reshapeProductData(data?: IGoogleDBSchemaProduct[]): Product[] {
              * The SEO information of the product.
              */
             seo: {
-                title: sample.Name,
-                description: sample.Description
+                title: correspondingPage?.SeoTitle || sample.Name,
+                description: correspondingPage?.SeoDescription || ''
             },
             /**
              * The tags of the product.
@@ -163,7 +168,7 @@ export function reshapeProductData(data?: IGoogleDBSchemaProduct[]): Product[] {
                         currencyCode: 'SGD',
                     },
                     stock: product.Stock,
-                    image: product.SizeImageURL,
+                    image: product.ImageURL,
                     id: String(product.ID),
                     title: product.Name,
                     availableForSale: product.Stock > 0,

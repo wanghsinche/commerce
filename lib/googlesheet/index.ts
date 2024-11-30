@@ -47,7 +47,9 @@ export async function getProducts({
     if (sortKey) {
         filteredData = sortProducts(filteredData, sortKey, reverse)
     }
-    return reshapeProductData(filteredData)
+    const rawPages = await getRawPageData()
+
+    return reshapeProductData(filteredData, rawPages)
     
 }
 
@@ -90,7 +92,8 @@ export async function getCollectionProducts({
     if (sortKey) {
         filteredData = sortProducts(filteredData, sortKey, reverse)
     }
-    return reshapeProductData(filteredData)
+    const rawPages = await getRawPageData()
+    return reshapeProductData(filteredData, rawPages)
 }
 
 
@@ -136,7 +139,7 @@ export async function getProductRecommendations(product: string): Promise<Produc
     const recommends = await getRawRecommendData()
     const target = recommends.find((item) => item.Handle === product)
 
-    if (!target) {
+    if (!target?.Products) {
         return []
     }
     const pickedHandle = target.Products.split(',').map((item) => item.trim())

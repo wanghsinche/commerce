@@ -25,18 +25,18 @@ const useData = ({ product }: { product: Product }) => {
         `Hi, I'm interested in ${product.title}`;
 
     return {
-        message, selectedVariantId
+        message, selectedVariantId, variant
     }
 }
 
 export const SendViaWhatsApp = ({ product }: { product: Product }) => {
-    const { message, selectedVariantId } = useData({ product });
+    const { message, selectedVariantId, variant } = useData({ product });
     const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '';
-    return <WhatsAppButton message={message} phoneNumber={phoneNumber} disabled={!selectedVariantId} />
+    return <WhatsAppButton message={message} phoneNumber={phoneNumber} disabled={variant && !selectedVariantId} />
 }
 
 export const SendViaTelegram = ({ product }: { product: Product }) => {
-    const { message, selectedVariantId } = useData({ product });
+    const { message, selectedVariantId, variant } = useData({ product });
     const username = process.env.NEXT_PUBLIC_TELEGRAM_USERNAME || '';
-    return <TelegramButton message={message} username={username} disabled={!selectedVariantId} />
+    return <TelegramButton message={message} username={username} disabled={variant&&!selectedVariantId} />
 }

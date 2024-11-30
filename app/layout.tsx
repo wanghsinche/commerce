@@ -52,7 +52,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <main>
             {children}
             <Toaster closeButton />
-            <WelcomeToast />
+            {/* <WelcomeToast /> */}
           </main>
         </CartProvider>
       </body>
