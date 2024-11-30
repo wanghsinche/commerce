@@ -186,7 +186,7 @@ export function reshapeProductData(data: IGoogleDBSchemaProduct[], pages: IGoogl
     })
 
 
-    return products
+    return products.filter(i=>i.availableForSale)
     
 }
 
