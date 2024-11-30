@@ -11,6 +11,7 @@ import { getProduct, getProductRecommendations } from 'lib/googlesheet';
 import { Image } from 'lib/shopify/types';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { ScreenshotComment } from 'lib/comment/screenshot';
 export const runtime = "edge";
 
 export async function generateMetadata(props: {
@@ -104,6 +105,7 @@ export default async function ProductPage(props: { params: Promise<{ handle: str
             </Suspense>
           </div>
         </div>
+        {/* <Reviews handle={product.handle} /> */}
         <RelatedProducts handle={product.handle} />
       </div>
       <Footer />
@@ -145,6 +147,19 @@ async function RelatedProducts({ handle }: { handle: string }) {
           </li>
         ))}
       </ul>
+    </div>
+  );
+}
+
+async function Reviews({ handle }: { handle: string }) {
+  const product = await getProduct(handle);
+  if (!product) return null;
+  return (
+    <div className="py-8">
+      <h2 className="mb-4 text-2xl font-bold">Reviews</h2>
+      <Suspense fallback={<div>Loading...</div>}>
+          <ScreenshotComment product={product} /> 
+      </Suspense>
     </div>
   );
 }

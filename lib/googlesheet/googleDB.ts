@@ -24,7 +24,7 @@ function getSizeOption(products: IGoogleDBSchemaProduct[]): ProductOption  {
  * @param sheetName The name of the sheet to get the data from.
  * @returns The data from the sheet.
  */
-async function getGenericData<T>(sheetName: string): Promise<T[]> {
+export async function getGenericData<T>(sheetName: string): Promise<T[]> {
     const parser: PublicGoogleSheetsParser = new PublicGoogleSheetsParser(spreadsheetId!, {
         sheetName
     })
