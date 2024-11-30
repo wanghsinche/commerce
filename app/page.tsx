@@ -4,9 +4,16 @@ import { ThreeItemGrid } from 'components/grid/three-items';
 import Footer from 'components/layout/footer';
 export const runtime = "edge";
 export const metadata = {
-  description: 'High-performance ecommerce store built with Next.js, Vercel, and Shopify.',
+  title: {
+    default: 'Lady Lines Store | Brands & Latest Collections',
+    template: '%s'
+  },
+  description: 'Shop premium fashion brands like Calvin Klein, Lululemon, Jelly Cat and more. Find the latest collections, exclusive deals.',
+  keywords: ['fashion', 'Calvin Klein', 'Lululemon', 'Jelly Cat', 'premium clothing', 'premium bags','fashion store'],
   openGraph: {
-    type: 'website'
+    type: 'website',
+    title: 'Lady Lines Store | Brands & Latest Collections',
+    description: 'Discover luxury fashion brands and latest designer collections',
   }
 };
 
